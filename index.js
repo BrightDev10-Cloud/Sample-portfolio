@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fillStyle = '#0a0a0a'; // Dark background
             ctx.fillRect(0, 0, width, height);
             
-            ctx.strokeStyle = 'rgba(252, 155, 9, 0.15)'; // Orange grid lines
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)'; // white grid lines
             ctx.lineWidth = 1;
             
             const time = Date.now() * 0.001;
@@ -358,14 +358,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (line.type === 'vertical') {
                     // Warp vertical lines based on mouse
                     const distX = (line.x - mouseX) * 0.05;
-                    const x = line.x + Math.sin(time + line.x * 0.01) * 5 - distX;
+                    const x = line.x + Math.sin(time + line.x * 0.01) * 30 - distX;
                     
                     ctx.moveTo(x, 0);
                     ctx.lineTo(x, height);
                 } else {
                     // Warp horizontal lines
                     const distY = (line.y - mouseY) * 0.05;
-                    const y = line.y + Math.cos(time + line.y * 0.01) * 5 - distY;
+                    const y = line.y + Math.cos(time + line.y * 0.01) * 50 - distY;
                     
                     ctx.moveTo(0, y);
                     ctx.lineTo(width, y);
