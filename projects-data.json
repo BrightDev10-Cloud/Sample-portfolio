@@ -1,0 +1,112 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "slug": "3d-exhibition",
+      "title": "3D Exhibition",
+      "description": "An immersive 3D exhibition experience showcasing modern design principles and interactive elements.",
+      "image": "assets/cover_imgs/img-1.png",
+      "tags": ["Branding", "UI/UX", "3D Design"],
+      "category": "3D Design",
+      "client": "Creative Studio",
+      "year": "2024",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "slug": "data-dashboard",
+      "title": "Data Dashboard",
+      "description": "A comprehensive analytics dashboard for visualizing complex data sets with intuitive UI/UX.",
+      "image": "assets/cover_imgs/img-2.png",
+      "tags": ["Analytics", "UI/UX", "Development"],
+      "category": "Web Design",
+      "client": "Tech Corp",
+      "year": "2024",
+      "featured": true
+    },
+    {
+      "id": 3,
+      "slug": "ui-components",
+      "title": "UI Components",
+      "description": "A modern design system with reusable components for scalable product development.",
+      "image": "assets/cover_imgs/img-3.png",
+      "tags": ["UI/UX", "Design System"],
+      "category": "Design System",
+      "client": "Startup Inc",
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": 4,
+      "slug": "benito-gonzo",
+      "title": "Benito Gonzo",
+      "description": "A complete branding and web design project for a creative professional portfolio.",
+      "image": "assets/cover_imgs/img-4.png",
+      "tags": ["Branding", "Web Design"],
+      "category": "Branding",
+      "client": "Benito Gonzo",
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": 5,
+      "slug": "mobile-banking",
+      "title": "Mobile Banking",
+      "description": "A secure and user-friendly mobile banking application with modern UI/UX principles.",
+      "image": "assets/cover_imgs/img-5.png",
+      "tags": ["Mobile", "UI/UX"],
+      "category": "Mobile Design",
+      "client": "Financial Services",
+      "year": "2024",
+      "featured": true
+    },
+    {
+      "id": 6,
+      "slug": "3d-animations",
+      "title": "3D Animations",
+      "description": "Dynamic 3D animations and motion graphics for brand storytelling.",
+      "image": "assets/cover_imgs/img-6.png",
+      "tags": ["3D", "Animation"],
+      "category": "Animation",
+      "client": "Media Agency",
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": 7,
+      "slug": "toggle-switch",
+      "title": "Toggle Switch",
+      "description": "Micro-interaction design focusing on delightful user experience details.",
+      "image": "assets/cover_imgs/img.png",
+      "tags": ["UI/UX", "Micro-interaction"],
+      "category": "UI/UX",
+      "client": "Personal Project",
+      "year": "2023",
+      "featured": true
+    },
+    {
+      "id": 8,
+      "slug": "cloud-platform",
+      "title": "Cloud Platform",
+      "description": "A comprehensive SaaS dashboard for cloud infrastructure management.",
+      "image": "assets/cover_imgs/Page 6.png",
+      "tags": ["SaaS", "Dashboard"],
+      "category": "Web Design",
+      "client": "Cloud Services",
+      "year": "2024",
+      "featured": true
+    },
+    {
+      "id": 9,
+      "slug": "tech-showcase",
+      "title": "Tech Showcase",
+      "description": "A modern landing page showcasing cutting-edge technology products.",
+      "image": "assets/cover_imgs/Doc 1 1.png",
+      "tags": ["Landing Page", "Product"],
+      "category": "Web Design",
+      "client": "Tech Startup",
+      "year": "2024",
+      "featured": true
+    }
+  ]
+}

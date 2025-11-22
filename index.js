@@ -1,7 +1,149 @@
-// ============================================
-// SMOOTH SCROLL & NAVIGATION
-// ============================================
+
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // ============================================
+    // LOAD AND RENDER PROJECTS FROM JSON
+    // ============================================
+    async function loadProjects() {
+        try {
+            const response = await fetch('projects-data.json');
+            const data = await response.json();
+            const projectsGrid = document.getElementById('projectsGrid');
+            
+            if (!projectsGrid) {
+                console.error('Projects grid container not found');
+                return;
+            }
+            
+            // Clear any existing content
+            projectsGrid.innerHTML = '';
+            
+            // Render each project
+            data.projects.forEach((project, index) => {
+                const projectCard = createProjectCard(project, index);
+                projectsGrid.appendChild(projectCard);
+            });
+            
+            // Re-initialize animations after projects are loaded
+            initializeProjectAnimations();
+            
+        } catch (error) {
+            console.error('Error loading projects:', error);
+            // Fallback: show error message
+            const projectsGrid = document.getElementById('projectsGrid');
+            if (projectsGrid) {
+                projectsGrid.innerHTML = '<p style="color: var(--color-white); text-align: center; padding: 2rem;">Unable to load projects. Please try again later.</p>';
+            }
+        }
+    }
+    
+    /**
+     * Create a project card element from project data
+     * @param {Object} project - The project data object
+     * @param {number} index - The index of the project
+     * @returns {HTMLElement} - The created project card element
+     */
+    function createProjectCard(project, index) {
+        // Create article element
+        const article = document.createElement('article');
+        article.className = 'project-card';
+        article.style.animationDelay = `${(index + 1) * 0.1}s`;
+        article.dataset.projectId = project.id;
+        article.dataset.projectSlug = project.slug;
+        
+        // Create image
+        const img = document.createElement('img');
+        img.src = project.image;
+        img.alt = project.title;
+        img.className = 'project-image';
+        img.loading = 'lazy'; // Lazy load images for better performance
+        
+        // Create project info section
+        const projectInfo = document.createElement('div');
+        projectInfo.className = 'project-info';
+        
+        // Create title
+        const title = document.createElement('h3');
+        title.className = 'project-title';
+        title.textContent = project.title;
+        
+        // Create tags container
+        const tagsContainer = document.createElement('div');
+        tagsContainer.className = 'project-tags';
+        
+        // Add tags
+        project.tags.forEach(tagText => {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = tagText;
+            tagsContainer.appendChild(tag);
+        });
+        
+        // Assemble project info
+        projectInfo.appendChild(title);
+        projectInfo.appendChild(tagsContainer);
+        
+        // Create arrow
+        const arrow = document.createElement('div');
+        arrow.className = 'project-arrow';
+        arrow.textContent = '→';
+        
+        // Assemble card
+        article.appendChild(img);
+        article.appendChild(projectInfo);
+        article.appendChild(arrow);
+        
+        // Add click handler for navigation to project detail page
+        article.addEventListener('click', () => {
+            // For now, we'll prepare the data attribute for future use
+            // When we create the project detail page, we can navigate using:
+            // window.location.href = `project-detail.html?slug=${project.slug}`;
+            console.log(`Clicked project: ${project.title} (${project.slug})`);
+            
+            // Store project data in sessionStorage for the detail page
+            sessionStorage.setItem('selectedProject', JSON.stringify(project));
+            
+            // TODO: Navigate to project detail page
+            // window.location.href = `project-detail.html?slug=${project.slug}`;
+        });
+        
+        // Add hover cursor
+        article.style.cursor = 'pointer';
+        
+        return article;
+    }
+    
+    /**
+     * Initialize or re-initialize project card animations and observers
+     */
+    function initializeProjectAnimations() {
+        const projectCards = document.querySelectorAll('.project-card');
+        
+        // Re-observe cards with intersection observer
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        projectCards.forEach(card => {
+            observer.observe(card);
+        });
+        
+        // Initialize stacking animation
+        updateProjectCardsStack();
+    }
+    
+    // Load projects on page load
+    loadProjects();
     
     // Header background on scroll
     const header = document.getElementById('header');
@@ -59,35 +201,101 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
-    // ============================================
-    // INTERSECTION OBSERVER FOR SCROLL ANIMATIONS
-    // ============================================
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
+    // Observe service items
+    const serviceItems = document.querySelectorAll('.service-item');
+    const serviceObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.style.opacity = '1';
                 entry.target.style.transform = 'translateY(0)';
             }
         });
-    }, observerOptions);
-
-    // Observe all project cards
-    const projectCards = document.querySelectorAll('.project-card');
-    projectCards.forEach(card => {
-        observer.observe(card);
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
     });
-
-    // Observe service items
-    const serviceItems = document.querySelectorAll('.service-item');
+    
     serviceItems.forEach(item => {
-        observer.observe(item);
+        serviceObserver.observe(item);
     });
+
+    // ============================================
+    // PROJECT CARDS STACKING ON SCROLL ANIMATION
+    // ============================================
+    function updateProjectCardsStack() {
+        const cards = document.querySelectorAll('.project-card');
+        
+        cards.forEach((card, index) => {
+            const cardRect = card.getBoundingClientRect();
+            const cardTop = cardRect.top;
+            const cardHeight = cardRect.height;
+            const windowHeight = window.innerHeight;
+            
+            // Calculate the sticky position for this card
+            const stickyTop = 80 + (index * 10);
+            
+            // Calculate progress: how far the card has scrolled into the sticky position
+            // When cardTop equals stickyTop, progress = 0
+            // When cardTop is above stickyTop, progress increases
+            const progress = Math.max(0, Math.min(1, (stickyTop - cardTop) / 100));
+            
+            // Scale: starts at 1, scales down to 0.95 as it stacks
+            const scale = 1 - (progress * 0.05);
+            
+            // Check if the next card is coming
+            const nextCard = cards[index + 1];
+            if (nextCard) {
+                const nextCardRect = nextCard.getBoundingClientRect();
+                const nextCardTop = nextCardRect.top;
+                const nextStickyTop = 80 + ((index + 1) * 10);
+                
+                // When next card approaches, scale down the current card more
+                if (nextCardTop <= nextStickyTop + 200) {
+                    const pushProgress = Math.max(0, Math.min(1, (nextStickyTop + 200 - nextCardTop) / 200));
+                    const pushScale = 1 - (pushProgress * 0.1);
+                    card.style.transform = `scale(${Math.min(scale, pushScale)})`;
+                    
+                    // Optional: Add slight opacity fade for stacked cards
+                    const opacity = 1 - (pushProgress * 0.3);
+                    card.style.filter = `brightness(${opacity})`;
+                } else {
+                    card.style.transform = `scale(${scale})`;
+                    card.style.filter = 'brightness(1)';
+                }
+            } else {
+                // Last card doesn't need to scale for next card
+                card.style.transform = `scale(1)`;
+                card.style.filter = 'brightness(1)';
+            }
+            
+            // When card is stuck at top and being pushed out of view
+            if (cardTop <= stickyTop && nextCard) {
+                const nextCardRect = nextCard.getBoundingClientRect();
+                if (nextCardRect.top <= stickyTop + cardHeight) {
+                    // Card is being pushed out, scale it down more
+                    const exitProgress = Math.max(0, Math.min(1, (stickyTop + cardHeight - nextCardRect.top) / cardHeight));
+                    const exitScale = 1 - (exitProgress * 0.2);
+                    card.style.transform = `scale(${exitScale})`;
+                    card.style.filter = `brightness(${1 - exitProgress * 0.5})`;
+                }
+            }
+        });
+    }
+
+    // Throttle the scroll event for better performance
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                updateProjectCardsStack();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    });
+
+    // Initial call
+    updateProjectCardsStack();
 
     // ============================================
     // INFINITE DRAGGABLE TOOLS SLIDER
@@ -246,29 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (tooltip) {
                 tooltip.remove();
             }
-        });
-    });
-
-    // ============================================
-    // PROJECT CARDS TILT EFFECT
-    // ============================================
-    projectCards.forEach(card => {
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = ((y - centerY) / centerY) * 5;
-            const rotateY = ((centerX - x) / centerX) * 5;
-            
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-10px)`;
-        });
-        
-        card.addEventListener('mouseleave', () => {
-            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
         });
     });
 
