@@ -252,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // When next card approaches, scale down the current card more
                 if (nextCardTop <= nextStickyTop + 200) {
                     const pushProgress = Math.max(0, Math.min(1, (nextStickyTop + 200 - nextCardTop) / 200));
-                    const pushScale = 1 - (pushProgress * 0.1);
+                    const pushScale = 1 - (pushProgress * 0.3);
                     card.style.transform = `scale(${Math.min(scale, pushScale)})`;
                     
                     // Optional: Add slight opacity fade for stacked cards
